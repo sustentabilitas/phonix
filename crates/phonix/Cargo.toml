@@ -1,0 +1,37 @@
+[package]
+name = "phonix"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Pure-Rust OpenWakeWord wake-word detection with Silero VAD and pre-roll buffering for live-LLM streaming"
+readme = "README.md"
+keywords = ["wake-word", "openwakeword", "vad", "speech"]
+categories = ["multimedia::audio"]
+
+[lib]
+name = "phonix"
+path = "src/lib.rs"
+
+[[bin]]
+name = "phonix-listen"
+path = "src/bin/phonix-listen.rs"
+required-features = ["cli"]
+
+[dependencies]
+tract-onnx = "0.23"
+oww-rs = "0.3"
+rubato = "0.15"
+thiserror = "1"
+cpal = { version = "0.15", optional = true }
+hound = { version = "3", optional = true }
+clap = { version = "4", features = ["derive"], optional = true }
+tracing = { version = "0.1", optional = true }
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"], optional = true }
+
+[features]
+default = []
+cli = ["dep:cpal", "dep:hound", "dep:clap", "dep:tracing", "dep:tracing-subscriber"]
+
+[dev-dependencies]
+hound = "3"
