@@ -1,5 +1,5 @@
 /target
-/docs
 crates/phonix/models/*.onnx
-/.superpowers
-/.claude
+/docs/superpowers/
+.claude
+.superpowers

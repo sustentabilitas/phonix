@@ -1,0 +1,71 @@
+name: Bug report
+description: Something is not working as expected.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to file a bug report. Please fill in as much detail as possible — the more context you provide, the faster we can reproduce and fix the issue.
+
+        Before submitting, please [search existing issues](https://github.com/sustentabilitas/phonix/issues) to avoid duplicates.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear and concise description of the bug.
+      placeholder: Describe what went wrong.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps to reproduce the behavior.
+      placeholder: |
+        1. Run `phonix-listen ...` / call `Detector::push(...)` with …
+        2. Feed audio …
+        3. Observe …
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen instead?
+      placeholder: Describe the expected outcome.
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version / commit
+      description: The phonix crate version or the full git SHA you are running, plus your OS/arch.
+      placeholder: "e.g. phonix 0.1.0 on macOS arm64, or ad843cd"
+    validations:
+      required: true
+
+  - type: textarea
+    id: audio-config
+    attributes:
+      label: Audio & detector configuration
+      description: Input sample rate / channels / device, thresholds, pre-roll/cooldown, and whether you use the bundled or a custom wake model.
+      render: text
+
+  - type: textarea
+    id: debug-output
+    attributes:
+      label: Debug output / logs
+      description: Output from `phonix-listen ... --debug` (peak amplitude, VAD probability, wake score) and/or relevant log output. Redact anything sensitive.
+      render: shell
+
+  - type: checkboxes
+    id: existing-issues
+    attributes:
+      label: Existing issues
+      options:
+        - label: I have searched the existing issues and this is not a duplicate.
+          required: true
