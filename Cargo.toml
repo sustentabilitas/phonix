@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/phonix", "crates/phonix-recall"]
+members = ["crates/phonix", "crates/phonix-recall", "crates/phonix-eval"]
 
 [workspace.package]
 edition = "2021"

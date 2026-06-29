@@ -1,0 +1,17 @@
+[package]
+name = "phonix-eval"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Offline recall / false-positive evaluation harness for phonix on degraded meeting audio"
+
+[[bin]]
+name = "phonix-eval"
+path = "src/main.rs"
+
+[dependencies]
+phonix = { path = "../phonix" }
+hound = "3"
+clap = { version = "4", features = ["derive"] }
+anyhow = "1"

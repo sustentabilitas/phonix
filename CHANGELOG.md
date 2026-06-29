@@ -22,5 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `phonix-recall`: a pure-Linux WebSocket service (axum) that feeds Recall.ai
   real-time meeting audio into the detector — one `Detector` per participant,
   with a Dockerfile for GKE deployment.
+- `phonix-eval`: an offline recall / false-positive evaluation harness, plus
+  `scripts/eval/degrade.sh` (ffmpeg Opus + optional background-speaker overlay),
+  for scoring detection on realistic degraded meeting audio across a threshold
+  sweep.
 
 [Unreleased]: https://github.com/sustentabilitas/phonix/commits/main

@@ -1943,6 +1943,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "phonix-eval"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap 4.6.1",
+ "hound",
+ "phonix",
+]
+
+[[package]]
 name = "phonix-recall"
 version = "0.1.0"
 dependencies = [
