@@ -91,6 +91,11 @@ async fn handle_socket(mut socket: WebSocket, state: Arc<AppState>) {
     while let Some(Ok(msg)) = socket.recv().await {
         let text = match msg {
             Message::Text(t) => t,
+            // Keep long-lived connections alive (e.g. through an LB) during silence.
+            Message::Ping(p) => {
+                let _ = socket.send(Message::Pong(p)).await;
+                continue;
+            }
             Message::Close(_) => break,
             _ => continue,
         };

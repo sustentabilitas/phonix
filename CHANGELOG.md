@@ -26,5 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `scripts/eval/degrade.sh` (ffmpeg Opus + optional background-speaker overlay),
   for scoring detection on realistic degraded meeting audio across a threshold
   sweep.
+- Operations tooling: `scripts/recall/` (Recall.ai bot join/status/leave helpers)
+  and `scripts/k8s/` (GKE Deployment + Service/BackendConfig + Ingress/ManagedCertificate
+  templates for deploying `phonix-recall`).
+- `phonix-recall` now answers WebSocket pings, keeping long-lived connections
+  alive through a load balancer during silence.
 
 [Unreleased]: https://github.com/sustentabilitas/phonix/commits/main

@@ -1,0 +1,29 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: phonix-recall-cert
+spec:
+  domains:
+    - recall.example.com # <-- set me (must resolve to the ingress IP for the cert to provision)
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: phonix-recall
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    networking.gke.io/managed-certificates: "phonix-recall-cert"
+    # Optional: reserve a global static IP and reference it so DNS is stable:
+    # kubernetes.io/ingress.global-static-ip-name: "phonix-recall-ip"
+spec:
+  rules:
+    - host: recall.example.com # <-- set me
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: phonix-recall
+                port:
+                  number: 80

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phonix-recall
+  labels:
+    app: phonix-recall
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: phonix-recall
+  template:
+    metadata:
+      labels:
+        app: phonix-recall
+    spec:
+      containers:
+        - name: phonix-recall
+          # Build from crates/phonix-recall/Dockerfile and push to your registry.
+          image: REGION-docker.pkg.dev/PROJECT_ID/phonix/phonix-recall:latest # <-- set me
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PHONIX_VAD_MODEL
+              value: /app/models/silero_vad.onnx # baked into the image
+            - name: PORT
+              value: "8080"
+            - name: RUST_LOG
+              value: info
+            # - name: PHONIX_WAKE_MODEL      # custom model (mount via a volume/initContainer)
+            #   value: /app/models/moreni.onnx
+            # - name: PHONIX_WAKE_THRESHOLD
+            #   value: "0.5"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+            # tract inference is CPU-bound; each concurrent participant loads its
+            # own Silero VAD model, so memory scales with concurrent speakers.
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"

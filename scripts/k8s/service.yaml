@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: phonix-recall
+  annotations:
+    # Attach the BackendConfig below so the LB doesn't drop long WebSockets.
+    cloud.google.com/backend-config: '{"default":"phonix-recall-bc"}'
+spec:
+  type: ClusterIP
+  selector:
+    app: phonix-recall
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: phonix-recall-bc
+spec:
+  # GKE's HTTP(S) Load Balancer default backend timeout is 30s and WILL drop a
+  # long-lived WebSocket. Raise it well past any meeting's length. (phonix-recall
+  # also answers WS pings, but the LB timeout is the real gotcha.)
+  timeoutSec: 3600
+  connectionDraining:
+    drainingTimeoutSec: 60
+  healthCheck:
+    type: HTTP
+    requestPath: /healthz
+    port: 8080
