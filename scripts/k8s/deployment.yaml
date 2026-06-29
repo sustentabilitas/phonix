@@ -16,8 +16,9 @@ spec:
     spec:
       containers:
         - name: phonix-recall
-          # Build from crates/phonix-recall/Dockerfile and push to your registry.
-          image: REGION-docker.pkg.dev/PROJECT_ID/phonix/phonix-recall:latest # <-- set me
+          # Published on each release (:X.Y.Z + :latest) and on main (:edge).
+          # Swap for your own registry mirror if you prefer.
+          image: sustentabilitas/phonix-recall:latest
           ports:
             - containerPort: 8080
           env:

@@ -40,13 +40,22 @@ When you create the bot, point a real-time **websocket** endpoint at this servic
 
 ## Container & GKE
 
+Pull the published image (CI pushes `:X.Y.Z` + `:latest` on release tags, `:edge` on
+every push to `main`):
+
 ```bash
-./crates/phonix/models/fetch.sh                                  # model into the build context
+docker run -p 8080:8080 sustentabilitas/phonix-recall:latest
+```
+
+Or build it yourself (run `fetch.sh` first so the model is in the build context):
+
+```bash
+./crates/phonix/models/fetch.sh
 docker build -f crates/phonix-recall/Dockerfile -t phonix-recall:dev .
 docker run -p 8080:8080 phonix-recall:dev
 ```
 
-On GKE: run it as a `Deployment` + `Service`, and terminate **TLS at an Ingress/Gateway** so Recall connects over **`wss://`** (the app speaks plain `ws` on `:8080` behind it). Use `/healthz` for liveness/readiness probes. The image is `debian-slim` + a static-ish pure-Rust binary — no ONNX Runtime, no audio system libraries.
+On GKE: run it as a `Deployment` + `Service`, and terminate **TLS at an Ingress/Gateway** so Recall connects over **`wss://`** (the app speaks plain `ws` on `:8080` behind it). Use `/healthz` for liveness/readiness probes. The ML inference is pure-Rust (`tract`) — **no ONNX Runtime**. The only system library is **ALSA** (`libasound2`), pulled in transitively because `oww-rs` hard-depends on `cpal`; the Dockerfile installs it (the service never opens an audio device).
 
 > One detector per participant each loads its own Silero VAD model, so memory scales with concurrent speakers; fine for a first deployment, shareable later if needed.
 

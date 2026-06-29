@@ -28,6 +28,9 @@ Before you begin, please read our [Code of Conduct](CODE_OF_CONDUCT.md) and
 
 - [Rust stable toolchain](https://rustup.rs/) (the current stable release)
 - `cargo fmt` and `cargo clippy` (both ship with `rustup`)
+- **On Linux:** the ALSA dev headers — `oww-rs` hard-depends on `cpal`, so the build
+  needs them even though the core opens no audio device:
+  `sudo apt-get install -y libasound2-dev pkg-config` (macOS needs nothing — CoreAudio)
 
 ### Clone and build
 
@@ -184,9 +187,13 @@ Releases are tag-driven. Maintainers only:
    ```
 
 Pushing the `vX.Y.Z` tag triggers [`.github/workflows/release.yml`](.github/workflows/release.yml),
-which verifies the tag matches `Cargo.toml`'s version and `cargo publish`es the crate to
-**crates.io**. Required repository secret (Settings → Secrets and variables → Actions):
-`CARGO_REGISTRY_TOKEN`.
+which verifies the tag matches `Cargo.toml`'s version, `cargo publish`es the `phonix` crate
+to **crates.io**, and builds + pushes the `phonix-recall` Docker image to **Docker Hub** as
+`sustentabilitas/phonix-recall:X.Y.Z` and `:latest`. Every push to `main` also publishes a
+rolling `sustentabilitas/phonix-recall:edge` image (no crate publish).
+
+Required repository secrets (Settings → Secrets and variables → Actions):
+`CARGO_REGISTRY_TOKEN`, `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`.
 
 ---
 

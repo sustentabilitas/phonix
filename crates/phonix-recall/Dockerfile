@@ -5,11 +5,21 @@
 #   docker build -f crates/phonix-recall/Dockerfile -t phonix-recall:dev .
 
 FROM rust:1-bookworm AS build
+# oww-rs depends on cpal unconditionally, which needs ALSA on Linux (even though
+# this service never opens an audio device). The ML inference itself is pure-Rust
+# (tract) — no ONNX Runtime.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      libasound2-dev pkg-config \
+    && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
 COPY . .
 RUN cargo build --release -p phonix-recall
 
 FROM debian:bookworm-slim AS runtime
+# Runtime needs the ALSA shared lib that cpal links against.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      libasound2 \
+    && rm -rf /var/lib/apt/lists/*
 RUN useradd --system --create-home app
 WORKDIR /app
 COPY --from=build /src/target/release/phonix-recall /usr/local/bin/phonix-recall

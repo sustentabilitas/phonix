@@ -3,12 +3,14 @@
 Pure-Rust wake-word detection with voice-activity gating, pre-roll buffering, and a streaming boundary for live-LLM voice agents — **zero C++**.
 
 [![phonix crates.io](https://img.shields.io/crates/v/phonix.svg)](https://crates.io/crates/phonix)
+[![phonix-recall Docker](https://img.shields.io/docker/v/sustentabilitas/phonix-recall?logo=docker&label=recall%20docker)](https://hub.docker.com/r/sustentabilitas/phonix-recall)
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
 [![CI](https://github.com/sustentabilitas/phonix/actions/workflows/ci.yml/badge.svg)](https://github.com/sustentabilitas/phonix/actions/workflows/ci.yml)
 
 | Crate | Description |
 |-------|-------------|
 | [`phonix`](crates/phonix) | Wake-word detector: Silero VAD + OpenWakeWord on [`tract`](https://github.com/sonos/tract), 16 kHz resampling, ~500 ms pre-roll ring, two-state (listen/stream) machine, and a `StreamSink` boundary for forwarding the live utterance to an LLM. Ships a `phonix-listen` CLI for local testing. |
+| [`phonix-recall`](crates/phonix-recall) | A pure-Linux WebSocket service that feeds [Recall.ai](https://recall.ai) real-time meeting audio into the detector — one `Detector` per participant. Published as a Docker image for GKE. |
 
 ## Contents
 
@@ -62,7 +64,7 @@ The detector is **speaker-independent** (OpenWakeWord's speech-embedding stage i
 
 ## Why phonix
 
-- **Zero C++, zero ONNX Runtime.** Every neural model — Silero VAD and the three-stage OpenWakeWord pipeline — runs on [`tract`](https://github.com/sonos/tract) (via [`oww-rs`](https://crates.io/crates/oww-rs) for OpenWakeWord), which compiles ONNX to pure-Rust execution. No `ort`, no native `onnxruntime`, no system libraries to link. You get deep-learning wake-word accuracy with a static, cross-compilable, ultra-light build.
+- **Zero C++ ML runtime.** Every neural model — Silero VAD and the three-stage OpenWakeWord pipeline — runs on [`tract`](https://github.com/sonos/tract) (via [`oww-rs`](https://crates.io/crates/oww-rs) for OpenWakeWord), which compiles ONNX to pure-Rust execution. No `ort`, no native `onnxruntime`. You get deep-learning wake-word accuracy with a cross-compilable, ultra-light build. *(One transitive caveat on Linux: `oww-rs` hard-depends on `cpal`, so the build links **ALSA** (`libasound2`) even though the core never opens an audio device — install `libasound2-dev`. macOS uses CoreAudio, no extra lib.)*
 - **Pre-roll built in.** Humans don't pause after the wake word ("Hey Moreni, what was the last action item?"). Phonix keeps an always-on ~500 ms circular buffer and prepends it to the first payload, so the LLM never misses the start of the question.
 - **VAD-gated, with end-of-utterance detection.** Silero VAD runs continuously to know when speech stops, so the streamed turn closes cleanly.
 - **Input-agnostic core.** The library is sync and I/O-free: it consumes `&[f32]` PCM and emits events. Mic, WAV file, and meeting-platform feeds are all thin adapters. `cpal`/`hound`/`clap` live only behind the `cli` feature.

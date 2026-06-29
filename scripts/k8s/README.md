@@ -17,24 +17,27 @@ long-lived WebSocket mid-meeting. `service.yaml` sets `BackendConfig.timeoutSec:
 to prevent that. (phonix-recall also answers WS pings, but the LB timeout is the real
 killer.)
 
+## Image
+
+`deployment.yaml` defaults to the published image `sustentabilitas/phonix-recall`,
+built and pushed by CI: `:X.Y.Z` + `:latest` on each `v*` release tag, and a rolling
+`:edge` on every push to `main`. Pin to `:X.Y.Z` for production. To build your own
+instead, run `./crates/phonix/models/fetch.sh` first (so the model is in the build
+context), then `docker build -f crates/phonix-recall/Dockerfile -t <your-image> .` and
+update the manifest.
+
 ## Steps
 
 ```bash
-# 1. Build + push the image (run fetch.sh first so the model is in the build context)
-./crates/phonix/models/fetch.sh
-docker build -f crates/phonix-recall/Dockerfile -t REGION-docker.pkg.dev/PROJECT_ID/phonix/phonix-recall:latest .
-docker push REGION-docker.pkg.dev/PROJECT_ID/phonix/phonix-recall:latest
+# 1. Edit the placeholders:
+#    ingress.yaml → domain (x2); deployment.yaml → image (only if not using the published one)
 
-# 2. Edit the placeholders:
-#    deployment.yaml → image
-#    ingress.yaml    → domain (x2)
-
-# 3. Apply
+# 2. Apply
 kubectl apply -f scripts/k8s/deployment.yaml
 kubectl apply -f scripts/k8s/service.yaml
 kubectl apply -f scripts/k8s/ingress.yaml
 
-# 4. Get the ingress IP, point your domain's DNS at it, then wait for the cert
+# 3. Get the ingress IP, point your domain's DNS at it, then wait for the cert
 kubectl get ingress phonix-recall -w
 kubectl describe managedcertificate phonix-recall-cert   # wait for status: Active
 ```

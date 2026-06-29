@@ -31,5 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   templates for deploying `phonix-recall`).
 - `phonix-recall` now answers WebSocket pings, keeping long-lived connections
   alive through a load balancer during silence.
+- CI publishes the `phonix-recall` Docker image to Docker Hub
+  (`sustentabilitas/phonix-recall`): `:X.Y.Z` + `:latest` on release tags, rolling
+  `:edge` on every push to `main`. The GKE manifest defaults to it.
 
 [Unreleased]: https://github.com/sustentabilitas/phonix/commits/main
