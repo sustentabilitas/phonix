@@ -19,5 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Meeting-platform adapter example and a fixture-driven regression harness
   (recall + false-positive).
 - `docs/training/` guide for training a custom wake-word classifier.
+- `phonix-recall`: a pure-Linux WebSocket service (axum) that feeds Recall.ai
+  real-time meeting audio into the detector — one `Detector` per participant,
+  with a Dockerfile for GKE deployment.
 
 [Unreleased]: https://github.com/sustentabilitas/phonix/commits/main

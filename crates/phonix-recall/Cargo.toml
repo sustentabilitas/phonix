@@ -1,0 +1,22 @@
+[package]
+name = "phonix-recall"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Recall.ai real-time audio adapter for the phonix wake-word detector — a pure-Linux WebSocket service for GKE"
+
+[[bin]]
+name = "phonix-recall"
+path = "src/main.rs"
+
+[dependencies]
+phonix = { path = "../phonix" }
+axum = { version = "0.8", features = ["ws"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "signal"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+base64 = "0.22"
+anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }

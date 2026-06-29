@@ -1,0 +1,10 @@
+# Keep the Docker build context small (build context is the workspace root).
+# NB: crates/phonix/models/*.onnx is intentionally NOT ignored — the Dockerfile
+# copies silero_vad.onnx from the context.
+/target
+/.git
+/.github
+/docs
+/.superpowers
+/.claude
+**/*.md
